@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Biblioteca</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #6366f1;
+        }
+        .info {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #4f46e5;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="test-box">
+        <h1>🔧 Test de Sesión</h1>
+        
+        <h3>Estado de localStorage:</h3>
+        <div class="info" id="storageInfo"></div>
+        
+        <h3>Test de Endpoints:</h3>
+        <button onclick="testLogin()">Test Login</button>
+        <button onclick="testProfile()">Test Profile</button>
+        <button onclick="goToDashboard()">Ir a Dashboard</button>
+        <button onclick="clearStorage()">Limpiar localStorage</button>
+        
+        <h3>Resultados:</h3>
+        <div class="info" id="results"></div>
+    </div>
+
+    <script>
+        // Mostrar estado del localStorage
+        function showStorage() {
+            const token = localStorage.getItem('token');
+            const expiracion = localStorage.getItem('tokenExpiracion');
+            const usuario = localStorage.getItem('usuario');
+            
+            let html = '';
+            html += `<p><strong>Token:</strong> ${token ? '✅ Existe (' + token.substring(0, 20) + '...)' : '❌ No existe'}</p>`;
+            html += `<p><strong>Expiración:</strong> ${expiracion ? '✅ ' + new Date(parseInt(expiracion)).toLocaleString() : '❌ No existe'}</p>`;
+            html += `<p><strong>Usuario:</strong> ${usuario ? '✅ ' + JSON.parse(usuario).nombreCompleto : '❌ No existe'}</p>`;
+            
+            document.getElementById('storageInfo').innerHTML = html;
+        }
+        
+        // Test de login
+        async function testLogin() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>🔄 Probando login...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'marianadonelara@gmail.com',
+                        password: 'Jonas1234'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('tokenExpiracion', new Date().getTime() + (30 * 60 * 1000));
+                    localStorage.setItem('usuario', JSON.stringify(data.usuario));
+                    
+                    results.innerHTML = '<p class="success">✅ Login exitoso!</p>';
+                    showStorage();
+                } else {
+                    results.innerHTML = '<p class="error">❌ Error: ' + data.mensaje + '</p>';
+                }
+            } catch (error) {
+                results.innerHTML = '<p class="error">❌ Error de conexión: ' + error.message + '</p>';
+            }
+        }
+        
+        // Test de profile
+        async function testProfile() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>🔄 Probando profile...</p>';
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                results.innerHTML = '<p class="error">❌ No hay token. Haz login primero.</p>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    results.innerHTML = '<p class="success">✅ Profile OK: ' + data.usuario.nombreCompleto + '</p>';
+                } else {
+                    results.innerHTML = '<p class="error">❌ Error: ' + (data.mensaje || 'Error desconocido') + '</p>';
+                }
+            } catch (error) {
+                results.innerHTML = '<p class="error">❌ Error de conexión: ' + error.message + '</p>';
+            }
+        }
+        
+        // Ir al dashboard
+        function goToDashboard() {
+            window.location.href = 'dashboard-new.html';
+        }
+        
+        // Limpiar storage
+        function clearStorage() {
+            localStorage.clear();
+            showStorage();
+            document.getElementById('results').innerHTML = '<p>🗑️ localStorage limpiado</p>';
+        }
+        
+        // Mostrar al cargar
+        showStorage();
+    </script>
+</body>
+</html>

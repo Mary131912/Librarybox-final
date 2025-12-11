@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Libro - Biblioteca Personal</title>
+    <link rel="stylesheet" href="styles-new.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="dashboard-nav">
+            <div class="nav-brand">
+                <div class="brand-icon">➕</div>
+                <div class="brand-text">
+                    <h1>Agregar Nuevo Libro</h1>
+                    <p>Añade un libro a tu colección</p>
+                </div>
+            </div>
+            <div class="nav-user">
+                <button class="btn-header" onclick="window.location.href='dashboard-new.html'">🏠 Inicio</button>
+                <button class="btn-header" onclick="window.location.href='biblioteca-new.html'">📚 Mi Biblioteca</button>
+            </div>
+        </nav>
+
+        <div class="dashboard-content">
+            <div id="mensaje" class="mensaje"></div>
+
+            <div class="info-card">
+                <form id="agregarLibroForm" style="max-width: 800px; margin: 0 auto;">
+                    <div class="form-group">
+                        <label for="titulo">📖 Título del Libro *</label>
+                        <input type="text" id="titulo" name="titulo" placeholder="Ej: Cien años de soledad" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="autor">✍️ Autor (Opcional)</label>
+                        <input type="text" id="autor" name="autor" placeholder="Ej: Gabriel García Márquez">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="genero">🎭 Género (Opcional)</label>
+                        <input type="text" id="genero" name="genero" placeholder="Ej: Novela, Ciencia Ficción, Romance">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ano">📅 Año de Publicación (Opcional)</label>
+                        <input type="number" id="ano" name="ano" placeholder="Ej: 2020" min="1000" max="2026">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="valoracion">⭐ Valoración 1-5 (Opcional)</label>
+                        <input type="number" id="valoracion" name="valoracion" min="1" max="5" placeholder="1-5">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="foto">📷 Foto del Libro (URL o subir imagen)</label>
+                        <input type="url" id="fotoURL" name="fotoURL" placeholder="https://ejemplo.com/portada.jpg" style="margin-bottom: 1rem;">
+                        <input type="file" id="fotoFile" name="fotoFile" accept="image/*" style="padding: 1rem; background: var(--dark-elevated); border: 2px dashed var(--neon-cyan); border-radius: 12px; cursor: pointer;">
+                        <div id="preview" style="margin-top: 1rem; text-align: center;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="resumen">📝 Resumen (Opcional)</label>
+                        <textarea id="resumen" name="resumen" rows="4" placeholder="Breve descripción del libro..." style="width: 100%; padding: 1rem; background: var(--dark-elevated); border: 2px solid rgba(0, 255, 255, 0.2); border-radius: 12px; color: var(--text-primary); font-size: 1rem; resize: vertical;"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="margin-top: 2rem;">
+                        ✨ Agregar Libro a Mi Colección
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Preview de imagen
+        document.getElementById('fotoFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview').innerHTML = 
+                        `<img src="${e.target.result}" style="max-width: 300px; max-height: 400px; border-radius: 12px; box-shadow: 0 0 30px var(--neon-cyan);">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Manejar el formulario
+        document.getElementById('agregarLibroForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const valoracionInput = document.getElementById('valoracion').value;
+            const anoInput = document.getElementById('ano').value;
+            
+            const formData = {
+                titulo: document.getElementById('titulo').value.trim(),
+                autor: document.getElementById('autor').value.trim() || null,
+                genero: document.getElementById('genero').value.trim() || null,
+                ano_publicacion: anoInput ? parseInt(anoInput) : null,
+                valoracion: valoracionInput ? parseInt(valoracionInput) : null,
+                resumen: document.getElementById('resumen').value.trim() || null,
+                foto: document.getElementById('fotoURL').value.trim() || null
+            };
+
+            // Si hay archivo, convertirlo a base64
+            const fileInput = document.getElementById('fotoFile');
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    formData.foto = e.target.result;
+                    await enviarLibro(formData);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                await enviarLibro(formData);
+            }
+        });
+
+        async function enviarLibro(data) {
+            try {
+                // Limpiar campos nulos o vacíos
+                Object.keys(data).forEach(key => {
+                    if (data[key] === null || data[key] === '' || data[key] === undefined || 
+                        (typeof data[key] === 'number' && isNaN(data[key]))) {
+                        delete data[key];
+                    }
+                });
+
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    mostrarMensaje('⚠️ Sesión expirada. Por favor, inicia sesión.', 'error');
+                    setTimeout(() => window.location.href = 'login.html', 2000);
+                    return;
+                }
+
+                const response = await fetch('/api/libros', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    mostrarMensaje('¡Libro agregado exitosamente! 🎉', 'exito');
+                    setTimeout(() => {
+                        window.location.href = 'biblioteca-new.html';
+                    }, 2000);
+                } else {
+                    mostrarMensaje(result.mensaje || 'Error al agregar el libro', 'error');
+                }
+            } catch (error) {
+                console.error('Error completo:', error);
+                mostrarMensaje('Error de conexión: ' + error.message, 'error');
+            }
+        }
+
+        function mostrarMensaje(texto, tipo) {
+            const mensaje = document.getElementById('mensaje');
+            mensaje.textContent = texto;
+            mensaje.className = `mensaje ${tipo}`;
+            setTimeout(() => {
+                mensaje.className = 'mensaje';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

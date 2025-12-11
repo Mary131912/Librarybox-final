@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal - Sistema de Autenticación</title>
+    <link rel="stylesheet" href="styles-new.css">
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard">
+            <header class="dashboard-header">
+                <h1>🏠 Página Principal</h1>
+                <div style="display: flex; gap: 1rem;">
+                    <button id="bibliotecaBtn" class="btn">📚 Mi Biblioteca</button>
+                    <button id="logoutBtn" class="btn btn-secondary">Cerrar Sesión</button>
+                </div>
+            </header>
+            
+            <div id="mensaje" class="mensaje"></div>
+            
+            <div class="welcome-section">
+                <div class="welcome-icon">👋</div>
+                <h2 id="welcomeMessage">¡Bienvenido/a!</h2>
+                <p class="welcome-text">Has iniciado sesión correctamente en el sistema</p>
+            </div>
+            
+            <div class="user-info">
+                <h3>📊 Información de tu Cuenta</h3>
+                <div class="info-card">
+                    <div class="info-row">
+                        <strong>👤 Nombre:</strong>
+                        <span id="userName">Cargando...</span>
+                    </div>
+                    <div class="info-row">
+                        <strong>📧 Email:</strong>
+                        <span id="userEmail">Cargando...</span>
+                    </div>
+                    <div class="info-row">
+                        <strong>📅 Miembro desde:</strong>
+                        <span id="memberSince">Cargando...</span>
+                    </div>
+                    <div class="info-row">
+                        <strong>🕒 Último acceso:</strong>
+                        <span id="lastAccess">Ahora</span>
+                    </div>
+                    <div class="info-row">
+                        <strong>🔐 Estado:</strong>
+                        <span class="status-badge">✓ Autenticado</span>
+                    </div>
+                </div>
+                
+                <div class="session-info">
+                    <p>⏱️ Tu sesión expirará automáticamente después de 30 minutos de inactividad por seguridad</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="home.js"></script>
+</body>
+</html>

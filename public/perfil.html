@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Biblioteca Personal</title>
+    <link rel="stylesheet" href="styles-new.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            display: block;
+        }
+
+        .perfil-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .perfil-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .perfil-title {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+        }
+
+        .perfil-title span {
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+            -webkit-text-fill-color: initial;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .info-card h2 {
+            color: var(--primary-color);
+            margin: 0 0 1.5rem 0;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .password-requirements {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .password-requirements h4 {
+            margin: 0 0 0.5rem 0;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .password-requirements ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .password-requirements li {
+            color: #666;
+            font-size: 0.85rem;
+            margin: 0.25rem 0;
+        }
+
+        .btn-icon {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .perfil-container {
+                padding: 1rem;
+            }
+
+            .perfil-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .info-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="perfil-container">
+        <!-- Header -->
+        <div class="perfil-header">
+            <h1 class="perfil-title">
+                <span>👤</span>
+                Mi Perfil
+            </h1>
+            <div class="header-actions">
+                <button class="btn btn-icon" id="btnBiblioteca">
+                    <span>📚</span>
+                    Biblioteca
+                </button>
+                <button class="btn btn-secondary btn-icon" id="btnInicio">
+                    <span>🏠</span>
+                    Inicio
+                </button>
+                <button class="btn btn-secondary" id="btnCerrarSesion">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <!-- Información del Usuario -->
+        <div class="info-card">
+            <h2>
+                <span>📋</span>
+                Información Personal
+            </h2>
+            <div class="info-row">
+                <span class="info-label">Nombre Completo:</span>
+                <span class="info-value" id="nombreCompleto">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Correo Electrónico:</span>
+                <span class="info-value" id="email">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Miembro desde:</span>
+                <span class="info-value" id="fechaCreacion">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Último acceso:</span>
+                <span class="info-value" id="ultimoAcceso">-</span>
+            </div>
+        </div>
+
+        <!-- Cambiar Contraseña -->
+        <div class="info-card">
+            <h2>
+                <span>🔐</span>
+                Cambiar Contraseña
+            </h2>
+            
+            <div class="password-requirements">
+                <h4>La contraseña debe cumplir con:</h4>
+                <ul>
+                    <li>Mínimo 8 caracteres</li>
+                    <li>Al menos una letra mayúscula</li>
+                    <li>Al menos una letra minúscula</li>
+                    <li>Al menos un número</li>
+                </ul>
+            </div>
+
+            <form id="formCambiarPassword">
+                <div class="form-group">
+                    <label for="passwordActual">Contraseña Actual</label>
+                    <div class="password-input-wrapper">
+                        <input 
+                            type="password" 
+                            id="passwordActual" 
+                            class="form-input" 
+                            required
+                        >
+                        <button type="button" class="password-toggle" id="toggleActual">
+                            <span class="toggle-icon">👁️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordNueva">Nueva Contraseña</label>
+                    <div class="password-input-wrapper">
+                        <input 
+                            type="password" 
+                            id="passwordNueva" 
+                            class="form-input" 
+                            required
+                        >
+                        <button type="button" class="password-toggle" id="toggleNueva">
+                            <span class="toggle-icon">👁️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordConfirmar">Confirmar Nueva Contraseña</label>
+                    <div class="password-input-wrapper">
+                        <input 
+                            type="password" 
+                            id="passwordConfirmar" 
+                            class="form-input" 
+                            required
+                        >
+                        <button type="button" class="password-toggle" id="toggleConfirmar">
+                            <span class="toggle-icon">👁️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="mensajePassword" class="mensaje" style="display: none;"></div>
+
+                <button type="submit" class="btn" id="btnCambiarPassword">
+                    Cambiar Contraseña
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="perfil.js"></script>
+</body>
+</html>

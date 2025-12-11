@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  # Aplicación LibraryBox
+  app:
+    build: .
+    container_name: librarybox-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - librarybox-network
+    volumes:
+      # Montar carpeta public para desarrollo (opcional)
+      - ./public:/app/public
+
+networks:
+  librarybox-network:
+    driver: bridge

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Biblioteca - Dashboard</title>
+    <link rel="stylesheet" href="styles-new.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="dashboard-nav">
+            <div class="nav-brand">
+                <div class="brand-icon">📚</div>
+                <div class="brand-text">
+                    <h1>Mi Biblioteca Personal</h1>
+                    <p id="currentDate"></p>
+                </div>
+            </div>
+            <div class="nav-user">
+                <div class="user-avatar" id="userAvatar">M</div>
+                <div class="user-info">
+                    <h3 id="userName">Mariana</h3>
+                    <p id="userEmail">marianadonelara@gmail.com</p>
+                </div>
+                <button class="btn-logout" id="btnCerrarSesion">Cerrar Sesión</button>
+            </div>
+        </nav>
+
+        <div class="dashboard-content">
+            <div class="welcome-hero">
+                <h2 id="welcomeMessage">¡Hola, Mariana! 👋</h2>
+                <p>Gestiona tu colección de libros de forma fácil y organizada</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="feature-card" onclick="window.location.href='biblioteca-new.html'">
+                    <div class="card-icon">📖</div>
+                    <h3>Mi Biblioteca</h3>
+                    <p>Explora tu colección completa de libros, busca, filtra y organiza tus lecturas favoritas.</p>
+                </div>
+
+                <div class="feature-card" onclick="alert('Funcionalidad de agregar libro')">
+                    <div class="card-icon">➕</div>
+                    <h3>Agregar Libro</h3>
+                    <p>Añade un nuevo libro a tu colección con detalles como autor, género, año y valoración.</p>
+                </div>
+
+                <div class="feature-card" onclick="window.location.href='perfil.html'">
+                    <div class="card-icon">👤</div>
+                    <h3>Mi Perfil</h3>
+                    <p>Gestiona tu información personal y cambia tu contraseña de forma segura.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="card-icon">📊</div>
+                    <h3>Estadísticas</h3>
+                    <p>Descubre tus patrones de lectura, géneros favoritos y libros mejor valorados.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard-new.js"></script>
+</body>
+</html>

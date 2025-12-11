@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Auth App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard">
+            <header class="dashboard-header">
+                <h1>Panel de Usuario</h1>
+                <button id="logoutBtn" class="btn btn-secondary">Cerrar Sesión</button>
+            </header>
+            
+            <div id="mensaje" class="mensaje"></div>
+            
+            <div class="user-info">
+                <h2>Bienvenido/a</h2>
+                <div class="info-card">
+                    <div class="info-row">
+                        <strong>Nombre:</strong>
+                        <span id="userName">Cargando...</span>
+                    </div>
+                    <div class="info-row">
+                        <strong>Email:</strong>
+                        <span id="userEmail">Cargando...</span>
+                    </div>
+                    <div class="info-row">
+                        <strong>Estado:</strong>
+                        <span class="status-badge">Sesión Activa</span>
+                    </div>
+                </div>
+                
+                <div class="session-info">
+                    <p>⏱️ Tu sesión expirará automáticamente después de 30 minutos de inactividad</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="dashboard.js"></script>
+</body>
+</html>

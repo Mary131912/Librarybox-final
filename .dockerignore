@@ -1,0 +1,11 @@
+node_modules
+npm-debug.log
+.env
+.git
+.gitignore
+README.md
+GUIA_USUARIO.md
+MONGODB_SETUP.md
+CHECKLIST_REQUERIMIENTOS.md
+*.md
+.DS_Store

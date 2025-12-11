@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Biblioteca Personal</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(180deg, #1a1f35 0%, #0f1419 100%);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            display: block;
+            color: #e1e8f0;
+        }
+
+        .biblioteca-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .biblioteca-header {
+            background: rgba(26, 31, 53, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .biblioteca-title {
+            font-size: 1.5rem;
+            color: #e1e8f0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+        }
+
+        .biblioteca-title span {
+            color: #ff9b5e;
+            font-size: 1.8rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 2rem;
+            margin-left: 2rem;
+        }
+
+        .nav-tab {
+            background: none;
+            border: none;
+            color: #8b92a7;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .nav-tab:hover, .nav-tab.active {
+            color: #e1e8f0;
+            border-bottom-color: #ff9b5e;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-icon {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .controles-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .controles-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .buscar-container {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .filtro-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .filtro-group label {
+            font-size: 0.9rem;
+            color: #555;
+            white-space: nowrap;
+        }
+
+        .filtro-group select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .filtro-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 0;
+            height: calc(100vh - 70px);
+        }
+
+        .books-section {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: #e1e8f0;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .books-count {
+            color: #8b92a7;
+            font-size: 0.9rem;
+        }
+
+        .sidebar {
+            background: rgba(15, 20, 25, 0.6);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            color: #e1e8f0;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .stat-card p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+        }
+
+        .libros-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 2rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .libro-card {
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .libro-cover {
+            width: 100%;
+            aspect-ratio: 2/3;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin-bottom: 0.8rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .libro-cover::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 100%);
+        }
+
+        .libro-card:hover .libro-cover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .libro-cover-text {
+            position: relative;
+            z-index: 1;
+            color: white;
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        .libro-titulo {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #e1e8f0;
+            margin: 0 0 0.3rem 0;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .libro-autor {
+            color: #8b92a7;
+            font-size: 0.8rem;
+            margin: 0;
+        }
+
+        /* Currently Reading Sidebar */
+        .reading-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .reading-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .reading-cover {
+            width: 100%;
+            aspect-ratio: 2/3;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            margin-bottom: 0.8rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 6;
+        }
+
+        .progress-ring-circle-fill {
+            fill: none;
+            stroke: #ff9b5e;
+            stroke-width: 6;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .reading-info h4 {
+            font-size: 0.95rem;
+            color: #e1e8f0;
+            margin: 0 0 0.3rem 0;
+        }
+
+        .reading-info p {
+            font-size: 0.8rem;
+            color: #8b92a7;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .reading-progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 4px;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 0.3rem;
+        }
+
+        .reading-progress-fill {
+            background: #ff9b5e;
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .reading-progress-text {
+            font-size: 0.75rem;
+            color: #8b92a7;
+        }
+
+        /* Reading Goals */
+        .goal-card {
+            background: rgba(255, 155, 94, 0.1);
+            border: 1px solid rgba(255, 155, 94, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .goal-title {
+            font-size: 0.85rem;
+            color: #8b92a7;
+            margin-bottom: 0.5rem;
+        }
+
+        .goal-number {
+            font-size: 2rem;
+            color: #e1e8f0;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .goal-progress {
+            background: rgba(255, 255, 255, 0.1);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .goal-progress-fill {
+            background: linear-gradient(90deg, #ff9b5e 0%, #ff6b6b 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .add-book-btn {
+            background: #ff9b5e;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .add-book-btn:hover {
+            background: #ff8a47;
+            transform: translateY(-2px);
+        }
+
+        .libro-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .libro-info-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .libro-info-label {
+            color: #888;
+        }
+
+        .libro-info-value {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .libro-genero {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .libro-valoracion {
+            color: #FFB800;
+            font-size: 1.1rem;
+        }
+
+        .libro-comentario {
+            margin: 1rem 0;
+            padding: 0.8rem;
+            background: #f5f5f5;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #555;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .libro-acciones {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-small {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-editar {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-editar:hover {
+            background: #45a049;
+        }
+
+        .btn-eliminar {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-eliminar:hover {
+            background: #da190b;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .btn-cerrar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-cerrar:hover {
+            color: #333;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            color: #666;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .biblioteca-container {
+                padding: 1rem;
+            }
+
+            .biblioteca-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .controles-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filtro-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .libros-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="biblioteca-container">
+        <!-- Header -->
+        <div class="biblioteca-header">
+            <h1 class="biblioteca-title">
+                <span>📚</span>
+                Mi Biblioteca Personal
+            </h1>
+            <div class="header-actions">
+                <button class="btn btn-icon" id="btnAgregarLibro">
+                    <span>➕</span>
+                    Agregar Libro
+                </button>
+                <button class="btn btn-secondary btn-icon" id="btnPerfil">
+                    <span>👤</span>
+                    Perfil
+                </button>
+                <button class="btn btn-secondary btn-icon" id="btnInicio">
+                    <span>🏠</span>
+                    Inicio
+                </button>
+                <button class="btn btn-secondary" id="btnCerrarSesion">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-container" id="statsContainer">
+            <div class="stat-card">
+                <h3 id="totalLibros">0</h3>
+                <p>Libros en total</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="generoFavorito">-</h3>
+                <p>Género favorito</p>
+            </div>
+        </div>
+
+        <!-- Controles -->
+        <div class="controles-container">
+            <div class="controles-row">
+                <div class="buscar-container">
+                    <input 
+                        type="text" 
+                        id="inputBuscar" 
+                        class="form-input" 
+                        placeholder="🔍 Buscar por título, autor o género..."
+                    >
+                </div>
+                <div class="filtro-group">
+                    <label for="filtroGenero">Género:</label>
+                    <select id="filtroGenero">
+                        <option value="todos">Todos</option>
+                        <option value="Ficción">Ficción</option>
+                        <option value="No Ficción">No Ficción</option>
+                        <option value="Historia">Historia</option>
+                        <option value="Ciencia">Ciencia</option>
+                        <option value="Biografía">Biografía</option>
+                        <option value="Fantasía">Fantasía</option>
+                        <option value="Romance">Romance</option>
+                        <option value="Terror">Terror</option>
+                        <option value="Misterio">Misterio</option>
+                        <option value="Autoayuda">Autoayuda</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="filtro-group">
+                    <label for="ordenarPor">Ordenar por:</label>
+                    <select id="ordenarPor">
+                        <option value="fecha">Fecha agregado</option>
+                        <option value="titulo">Título</option>
+                        <option value="autor">Autor</option>
+                        <option value="ano">Año</option>
+                        <option value="valoracion">Valoración</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de libros -->
+        <div id="librosContainer">
+            <div class="loading">Cargando biblioteca...</div>
+        </div>
+    </div>
+
+    <!-- Modal: Agregar/Editar Libro -->
+    <div class="modal" id="modalLibro">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Agregar Libro</h2>
+                <button class="btn-cerrar" id="btnCerrarModal">×</button>
+            </div>
+            <form id="formLibro">
+                <div class="form-group">
+                    <label for="inputTitulo">Título *</label>
+                    <input 
+                        type="text" 
+                        id="inputTitulo" 
+                        class="form-input" 
+                        maxlength="200" 
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="inputAutor">Autor *</label>
+                    <input 
+                        type="text" 
+                        id="inputAutor" 
+                        class="form-input" 
+                        maxlength="100" 
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="inputGenero">Género *</label>
+                    <select id="inputGenero" class="form-input" required>
+                        <option value="">Selecciona un género</option>
+                        <option value="Ficción">Ficción</option>
+                        <option value="No Ficción">No Ficción</option>
+                        <option value="Historia">Historia</option>
+                        <option value="Ciencia">Ciencia</option>
+                        <option value="Biografía">Biografía</option>
+                        <option value="Fantasía">Fantasía</option>
+                        <option value="Romance">Romance</option>
+                        <option value="Terror">Terror</option>
+                        <option value="Misterio">Misterio</option>
+                        <option value="Autoayuda">Autoayuda</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="inputAno">Año de Publicación *</label>
+                    <input 
+                        type="number" 
+                        id="inputAno" 
+                        class="form-input" 
+                        min="1000" 
+                        max="2024" 
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="inputValoracion">Valoración (1-5) *</label>
+                    <select id="inputValoracion" class="form-input" required>
+                        <option value="">Selecciona una valoración</option>
+                        <option value="5">⭐⭐⭐⭐⭐ (5 - Excelente)</option>
+                        <option value="4">⭐⭐⭐⭐ (4 - Muy bueno)</option>
+                        <option value="3">⭐⭐⭐ (3 - Bueno)</option>
+                        <option value="2">⭐⭐ (2 - Regular)</option>
+                        <option value="1">⭐ (1 - Malo)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="inputComentario">Comentario (opcional)</label>
+                    <textarea 
+                        id="inputComentario" 
+                        class="form-input" 
+                        rows="4" 
+                        maxlength="1000"
+                        placeholder="Escribe tu opinión sobre este libro..."
+                    ></textarea>
+                </div>
+                <div id="mensajeForm" class="mensaje" style="display: none;"></div>
+                <button type="submit" class="btn" id="btnGuardarLibro">Guardar Libro</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmar Eliminación -->
+    <div class="modal" id="modalEliminar">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>Confirmar Eliminación</h2>
+                <button class="btn-cerrar" id="btnCerrarEliminar">×</button>
+            </div>
+            <p>¿Estás seguro de que deseas eliminar este libro?</p>
+            <p id="libroEliminarNombre" style="font-weight: 600; color: var(--primary-color); margin: 1rem 0;"></p>
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" id="btnCancelarEliminar" style="flex: 1;">Cancelar</button>
+                <button class="btn btn-eliminar" id="btnConfirmarEliminar" style="flex: 1;">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="biblioteca.js"></script>
+</body>
+</html>

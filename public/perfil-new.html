@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Biblioteca Personal</title>
+    <link rel="stylesheet" href="styles-new.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="dashboard-nav">
+            <div class="nav-brand">
+                <div class="brand-icon">👤</div>
+                <div class="brand-text">
+                    <h1>Mi Perfil</h1>
+                    <p>Gestiona tu información personal</p>
+                </div>
+            </div>
+            <div class="nav-user">
+                <button class="btn-header" onclick="window.location.href='dashboard-new.html'">🏠 Inicio</button>
+                <button class="btn-logout" id="btnCerrarSesion">Cerrar Sesión</button>
+            </div>
+        </nav>
+
+        <div class="dashboard-content">
+            <div id="mensaje" class="mensaje"></div>
+
+            <div class="info-card">
+                <h2 style="margin-bottom: 2rem; color: var(--neon-cyan);">📊 Información de la Cuenta</h2>
+                
+                <div class="info-row">
+                    <strong>📧 Email:</strong>
+                    <span id="userEmail">Cargando...</span>
+                </div>
+                <div class="info-row">
+                    <strong>👤 Nombre:</strong>
+                    <span id="userName">Cargando...</span>
+                </div>
+                <div class="info-row">
+                    <strong>📅 Miembro desde:</strong>
+                    <span id="createdAt">Cargando...</span>
+                </div>
+            </div>
+
+            <div class="info-card" style="margin-top: 2rem;">
+                <h2 style="margin-bottom: 2rem; color: var(--neon-pink);">🔒 Cambiar Contraseña</h2>
+                
+                <form id="cambiarPasswordForm">
+                    <div class="form-group">
+                        <label for="passwordActual">Contraseña Actual</label>
+                        <input type="password" id="passwordActual" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="passwordNueva">Nueva Contraseña</label>
+                        <input type="password" id="passwordNueva" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="passwordConfirmar">Confirmar Nueva Contraseña</label>
+                        <input type="password" id="passwordConfirmar" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Actualizar Contraseña</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cargar información del usuario
+        async function cargarPerfil() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch('/api/usuario', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const usuario = await response.json();
+                    document.getElementById('userName').textContent = usuario.nombre;
+                    document.getElementById('userEmail').textContent = usuario.email;
+                    const fecha = new Date(usuario.fechaCreacion).toLocaleDateString('es-ES');
+                    document.getElementById('createdAt').textContent = fecha;
+                } else {
+                    throw new Error('Error al cargar perfil');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Cambiar contraseña
+        document.getElementById('cambiarPasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const passwordActual = document.getElementById('passwordActual').value;
+            const passwordNueva = document.getElementById('passwordNueva').value;
+            const passwordConfirmar = document.getElementById('passwordConfirmar').value;
+
+            if (passwordNueva !== passwordConfirmar) {
+                mostrarMensaje('Las contraseñas no coinciden', 'error');
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/cambiar-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ passwordActual, passwordNueva })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    mostrarMensaje('Contraseña actualizada exitosamente', 'exito');
+                    document.getElementById('cambiarPasswordForm').reset();
+                } else {
+                    mostrarMensaje(result.mensaje || 'Error al cambiar contraseña', 'error');
+                }
+            } catch (error) {
+                mostrarMensaje('Error de conexión', 'error');
+            }
+        });
+
+        // Cerrar sesión
+        document.getElementById('btnCerrarSesion').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        });
+
+        function mostrarMensaje(texto, tipo) {
+            const mensaje = document.getElementById('mensaje');
+            mensaje.textContent = texto;
+            mensaje.className = `mensaje ${tipo}`;
+            setTimeout(() => {
+                mensaje.className = 'mensaje';
+            }, 5000);
+        }
+
+        cargarPerfil();
+    </script>
+</body>
+</html>
