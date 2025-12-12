@@ -1,11 +1,12 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const path = require('path');
-const { MongoMemoryServer } = require('mongodb-memory-server');
 require('dotenv').config();
+
+// Base de datos adaptable (MongoDB o NeDB embebido)
+const { initDatabase, userAdapter, bookAdapter } = require('./database');
 
 const app = express();
 
@@ -18,52 +19,9 @@ app.use(express.static('public'));
 // Configuración de seguridad adicional
 app.disable('x-powered-by');
 
-// Función para inicializar base de datos con usuario demo
-async function inicializarBaseDatos() {
-    try {
-        const User = mongoose.model('User');
-        const cantidadUsuarios = await User.countDocuments();
-        
-        if (cantidadUsuarios === 0) {
-            console.log('📦 Creando usuario demo...');
-            const passwordCifrada = await bcrypt.hash('Demo1234', 10);
-            await User.create({
-                nombreCompleto: 'Usuario Demo',
-                email: 'demo@librarybox.com',
-                password: passwordCifrada
-            });
-            console.log('✅ Usuario demo creado');
-            console.log('📧 Email: demo@librarybox.com | 🔑 Password: Demo1234');
-        }
-    } catch (error) {
-        console.error('⚠️  Error:', error.message);
-    }
-}
-
-// Conectar a MongoDB (externo o en memoria)
-async function conectarBaseDatos() {
-    const MONGODB_URI = process.env.MONGODB_URI;
-    
-    if (MONGODB_URI) {
-        // MongoDB externo (docker-compose o Atlas)
-        console.log('🔌 Conectando a MongoDB externo...');
-        await mongoose.connect(MONGODB_URI);
-        console.log('✅ Conectado a MongoDB');
-    } else {
-        // MongoDB en memoria (docker run standalone)
-        console.log('💾 Iniciando MongoDB en memoria...');
-        const mongod = await MongoMemoryServer.create();
-        const uri = mongod.getUri();
-        await mongoose.connect(uri);
-        console.log('✅ MongoDB en memoria listo');
-        console.log('⚠️  NOTA: Los datos se perderán al reiniciar');
-    }
-    
-    await inicializarBaseDatos();
-}
-
-conectarBaseDatos().catch(err => {
-    console.error('❌ Error fatal:', err);
+// Inicializar base de datos al arrancar
+initDatabase().catch(err => {
+    console.error('❌ Error fatal al inicializar base de datos:', err);
     process.exit(1);
 });
 
