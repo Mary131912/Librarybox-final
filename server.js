@@ -20,10 +20,45 @@ app.disable('x-powered-by');
 // Conexión a MongoDB (sin opciones deprecadas)
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/auth-app';
 
+// Función para inicializar base de datos con usuario demo
+async function inicializarBaseDatos() {
+    try {
+        // Importar el modelo User
+        const User = mongoose.model('User');
+        
+        // Verificar si ya hay usuarios
+        const cantidadUsuarios = await User.countDocuments();
+        
+        if (cantidadUsuarios === 0) {
+            console.log('📦 Base de datos vacía detectada. Creando usuario demo...');
+            
+            // Crear usuario demo
+            const passwordCifrada = await bcrypt.hash('Demo1234', 10);
+            const usuarioDemo = new User({
+                nombreCompleto: 'Usuario Demo',
+                email: 'demo@librarybox.com',
+                password: passwordCifrada
+            });
+            
+            await usuarioDemo.save();
+            console.log('✅ Usuario demo creado exitosamente');
+            console.log('📧 Email: demo@librarybox.com');
+            console.log('🔑 Password: Demo1234');
+        } else {
+            console.log(`👥 ${cantidadUsuarios} usuario(s) encontrado(s) en la base de datos`);
+        }
+    } catch (error) {
+        console.error('⚠️  Error al inicializar base de datos:', error.message);
+    }
+}
+
 mongoose.connect(MONGODB_URI)
-.then(() => {
+.then(async () => {
     console.log('✅ Conectado exitosamente a MongoDB');
     console.log(`📊 Base de datos: ${mongoose.connection.name}`);
+    
+    // Inicializar base de datos automáticamente
+    await inicializarBaseDatos();
 })
 .catch(err => {
     console.error('❌ Error de conexión a MongoDB:', err.message);
