@@ -8,6 +8,20 @@ Sistema web profesional de gestión de biblioteca personal con **Node.js**, **Ex
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
+## 🐳 Inicio Rápido con Docker
+
+```bash
+docker run -d -p 3000:3000 \
+  -e MONGODB_URI="tu_connection_string_de_mongodb" \
+  -e JWT_SECRET="tu_secreto_jwt" \
+  --name librarybox \
+  mary1913/librarybox:latest
+```
+
+📖 **[Guía completa de instalación con Docker →](COMO_USAR_DOCKER.md)**
+
+**Acceso admin:** Usuario: `admin` | Contraseña: `1234`
+
 ## ✨ Características Principales
 
 ### 🎯 Funcionalidades Implementadas

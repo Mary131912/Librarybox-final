@@ -64,9 +64,6 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Índice para mejorar rendimiento en búsquedas
-userSchema.index({ email: 1 });
-
 const User = mongoose.model('User', userSchema);
 
 // Modelo de Libro
