@@ -8,31 +8,38 @@ Sistema web profesional de gestión de biblioteca personal con **Node.js**, **Ex
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-## 🐳 Inicio Rápido con Docker
+## 🐳 Inicio Rápido con Docker (Recomendado)
+
+**¡La forma más fácil! MongoDB incluido, sin configuración adicional.**
 
 ```bash
-# 1. Descargar imagen
-docker pull mary1913/librarybox:latest
+# 1. Descargar archivo de configuración
+curl -O https://raw.githubusercontent.com/Mary131912/Librarybox-final/main/docker-compose.production.yml
 
-# 2. Ejecutar (usa tu MongoDB Atlas)
+# 2. Ejecutar todo (app + MongoDB)
+docker-compose -f docker-compose.production.yml up -d
+
+# 3. Acceder a http://localhost:3000
+```
+
+**🔑 Primer acceso:**
+- **Admin:** `admin` / `1234` (acceso inmediato)
+- **Demo:** `demo@librarybox.com` / `Demo1234` (después de ejecutar `docker exec librarybox-app node init-db.js`)
+- **O regístrate:** Crea tu propia cuenta
+
+📖 **[Guía completa de instalación con Docker →](COMO_USAR_DOCKER.md)**
+
+### 🔧 Opción Avanzada: Solo la app
+
+Si ya tienes MongoDB Atlas configurado:
+
+```bash
 docker run -d -p 3000:3000 \
   -e MONGODB_URI="mongodb+srv://usuario:password@cluster.mongodb.net/auth-app" \
   -e JWT_SECRET="tu_secreto_seguro" \
   --name librarybox \
   mary1913/librarybox:latest
-
-# 3. Opcional: Crear usuario demo
-docker exec librarybox node init-db.js
-
-# 4. Acceder a http://localhost:3000
 ```
-
-📖 **[Guía completa de instalación con Docker →](COMO_USAR_DOCKER.md)**
-
-**🔑 Primer acceso:**
-- **Admin:** `admin` / `1234` (funciona inmediatamente)
-- **Demo:** `demo@librarybox.com` / `Demo1234` (después de ejecutar init-db.js)
-- **O regístrate:** Crea tu propia cuenta en la página de registro
 
 ## ✨ Características Principales
 

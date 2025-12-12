@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # MongoDB - Base de datos local
+  # MongoDB - Base de datos local (NO necesitas MongoDB Atlas)
   mongodb:
     image: mongo:7.0
     container_name: librarybox-mongodb
@@ -20,9 +20,9 @@ services:
       timeout: 5s
       retries: 5
 
-  # Aplicación LibraryBox
+  # Aplicación LibraryBox (imagen de Docker Hub)
   app:
-    build: .
+    image: mary1913/librarybox:latest
     container_name: librarybox-app
     restart: unless-stopped
     ports:
@@ -31,15 +31,12 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - MONGODB_URI=mongodb://mongodb:27017/auth-app
-      - JWT_SECRET=${JWT_SECRET:-secreto_super_seguro_cambiar_en_produccion}
+      - JWT_SECRET=secreto_super_seguro_cambiar_en_produccion
     depends_on:
       mongodb:
         condition: service_healthy
     networks:
       - librarybox-network
-    volumes:
-      # Montar carpeta public para desarrollo (opcional)
-      - ./public:/app/public
 
 volumes:
   mongodb-data:

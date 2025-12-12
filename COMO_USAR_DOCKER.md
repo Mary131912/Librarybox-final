@@ -1,5 +1,72 @@
 # 🚀 Guía para Usuarios - LibraryBox Docker
 
+## ⚡ OPCIÓN MÁS FÁCIL (Recomendada) - Todo incluido
+
+**Sin necesidad de MongoDB Atlas. MongoDB incluido en Docker.**
+
+### 1️⃣ Descargar archivo de configuración
+
+Descarga `docker-compose.production.yml` del repositorio:
+https://github.com/Mary131912/Librarybox-final/blob/main/docker-compose.production.yml
+
+O crea un archivo con este contenido:
+
+```yaml
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: librarybox-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - librarybox-network
+
+  app:
+    image: mary1913/librarybox:latest
+    container_name: librarybox-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/auth-app
+      - JWT_SECRET=secreto_super_seguro_cambiar_en_produccion
+    depends_on:
+      - mongodb
+    networks:
+      - librarybox-network
+
+volumes:
+  mongodb-data:
+
+networks:
+  librarybox-network:
+```
+
+### 2️⃣ Ejecutar
+
+```bash
+docker-compose -f docker-compose.production.yml up -d
+```
+
+### 3️⃣ Acceder
+
+Abre http://localhost:3000
+
+**Login:**
+- Usuario: `admin`
+- Contraseña: `1234`
+
+¡Listo! MongoDB está incluido, no necesitas configurar nada más.
+
+---
+
+## 🔧 OPCIÓN ALTERNATIVA - Con MongoDB Atlas
+
+Si prefieres usar MongoDB Atlas (nube):
+
 ## Cómo ejecutar LibraryBox desde Docker Hub
 
 ### 1️⃣ Requisitos Previos
