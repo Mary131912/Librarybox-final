@@ -11,16 +11,28 @@ Sistema web profesional de gestión de biblioteca personal con **Node.js**, **Ex
 ## 🐳 Inicio Rápido con Docker
 
 ```bash
+# 1. Descargar imagen
+docker pull mary1913/librarybox:latest
+
+# 2. Ejecutar (usa tu MongoDB Atlas)
 docker run -d -p 3000:3000 \
-  -e MONGODB_URI="tu_connection_string_de_mongodb" \
-  -e JWT_SECRET="tu_secreto_jwt" \
+  -e MONGODB_URI="mongodb+srv://usuario:password@cluster.mongodb.net/auth-app" \
+  -e JWT_SECRET="tu_secreto_seguro" \
   --name librarybox \
   mary1913/librarybox:latest
+
+# 3. Opcional: Crear usuario demo
+docker exec librarybox node init-db.js
+
+# 4. Acceder a http://localhost:3000
 ```
 
 📖 **[Guía completa de instalación con Docker →](COMO_USAR_DOCKER.md)**
 
-**Acceso admin:** Usuario: `admin` | Contraseña: `1234`
+**🔑 Primer acceso:**
+- **Admin:** `admin` / `1234` (funciona inmediatamente)
+- **Demo:** `demo@librarybox.com` / `Demo1234` (después de ejecutar init-db.js)
+- **O regístrate:** Crea tu propia cuenta en la página de registro
 
 ## ✨ Características Principales
 

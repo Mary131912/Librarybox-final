@@ -83,7 +83,29 @@ Deberías ver:
 2. **Abrir en navegador:**
    - Ve a http://localhost:3000
 
-### 5️⃣ Acceso de Administrador
+### 5️⃣ Primer Acceso
+
+**Tu base de datos estará vacía la primera vez.** Tienes 3 opciones:
+
+**Opción A: Usuario Admin (Recomendado para probar)**
+- Usuario: `admin`
+- Contraseña: `1234`
+- ✅ Funciona inmediatamente, no necesita registro
+
+**Opción B: Crear Usuario Demo**
+```bash
+docker exec librarybox node init-db.js
+```
+Esto crea:
+- Email: `demo@librarybox.com`
+- Contraseña: `Demo1234`
+
+**Opción C: Registrar tu propia cuenta**
+- Click en "Registrarse" en la página de login
+- Crea tu cuenta con email y contraseña
+- Requisitos: contraseña mínimo 8 caracteres, una mayúscula, una minúscula y un número
+
+### 6️⃣ Acceso de Administrador
 
 **Credenciales especiales:**
 - Usuario: `admin`
@@ -91,7 +113,12 @@ Deberías ver:
 
 Como admin puedes ver todos los libros y estadísticas de todos los usuarios.
 
-### 6️⃣ Comandos Útiles
+### 7️⃣ Comandos Útiles
+
+**Inicializar base de datos con usuario demo:**
+```bash
+docker exec librarybox node init-db.js
+```
 
 **Ver contenedores activos:**
 ```bash
@@ -129,6 +156,22 @@ docker logs -f librarybox
 **Error: "Address already in use"**
 - El puerto 3000 ya está ocupado
 - Usa otro puerto: `-p 8080:3000` (accede en http://localhost:8080)
+
+**Error al registrarse: "Error en el servidor"**
+- Verifica la conexión a MongoDB con: `docker logs librarybox`
+- Asegúrate de que MongoDB Atlas esté accesible
+- Revisa que la whitelist de IPs incluya tu dirección
+
+**No puedo hacer login**
+- Si es la primera vez: Usa `admin`/`1234` o regístrate primero
+- Si ya te registraste: Verifica email y contraseña
+- Si olvidaste tu contraseña: Usa el admin o crea otra cuenta
+
+**Inicializar base de datos con usuario demo:**
+```bash
+docker exec librarybox node init-db.js
+```
+Esto crea un usuario: `demo@librarybox.com` / `Demo1234`
 
 **No aparecen mis libros:**
 - Verifica que estés usando la misma base de datos
